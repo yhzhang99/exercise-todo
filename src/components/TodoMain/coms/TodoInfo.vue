@@ -24,6 +24,9 @@
         >Competed</a
       >
     </div>
+    <div id="right" @click="clearCom">
+      <a href="javascript:;">Clear completed</a>
+    </div>
   </div>
 </template>
 
@@ -48,6 +51,9 @@ export default {
       this.index = 3;
       this.$emit('changeCompleted');
     },
+    clearCom() {
+      this.$emit('clearCom');
+    },
   },
 };
 </script>
@@ -55,11 +61,13 @@ export default {
 <style scoped>
 #info {
   display: flex;
+  box-sizing: border-box;
   align-items: center;
-  justify-content: left;
+  justify-content: space-between;
   width: 500px;
   height: 50px;
   line-height: 50px;
+  padding: 0 10px 0 10px;
   margin: 0 auto;
   box-shadow: 0 0 5px;
   font-size: 12px;
@@ -69,11 +77,6 @@ export default {
         width: 200px;
         height: 50px;
       } */
-#left {
-  margin-left: 10px;
-  margin-right: 70px;
-}
-
 a,
 a:link,
 a:visited,
@@ -84,7 +87,6 @@ a:active {
 }
 a {
   padding: 10px;
-  margin: 10px;
 }
 .now {
   border: 1px solid #ead7d7;

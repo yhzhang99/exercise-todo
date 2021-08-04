@@ -21,6 +21,7 @@
       @changeAll="changeAll"
       @changeActive="changeActive"
       @changeCompleted="changeCompleted"
+      @clearCom="clearCom"
     >
       {{ letfItems }}
     </todo-info>
@@ -74,6 +75,13 @@ export default {
     changeCompleted() {
       this.flag = 'completed';
     },
+    clearCom() {
+      for (let i in this.todoData) {
+        if (this.todoData[i].done == 1) {
+          this.todoData.splice(i, 1);
+        }
+      }
+    },
   },
   computed: {
     newTodoData() {
@@ -85,7 +93,7 @@ export default {
       return this.todoData.filter((item) => item.done == 1);
     },
 
-    letfItems: function () {
+    letfItems() {
       let num = 0;
       for (let i in this.todoData) {
         if (this.todoData[i].done == 0) {
