@@ -76,9 +76,16 @@ export default {
       this.flag = 'completed';
     },
     clearCom() {
-      for (let i in this.todoData) {
+      // for (let i in this.todoData) {
+      //   if (this.todoData[i].done == 1) {
+      //     this.todoData.splice(i, 1);
+      //     i--;
+      //   }
+      // }
+      for (let i = 0; i < this.todoData.length; i++) {
         if (this.todoData[i].done == 1) {
           this.todoData.splice(i, 1);
+          i--;
         }
       }
     },

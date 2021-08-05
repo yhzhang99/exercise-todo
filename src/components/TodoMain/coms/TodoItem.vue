@@ -9,7 +9,17 @@
       ]"
       @click="changeDone"
     ></i>
-    {{ todomsg.tobedone }}
+    <p @dblclick="changemsg" :class="{ hide: isEdit }">
+      {{ todomsg.tobedone }}
+    </p>
+    <input
+      type="text"
+      :class="{ hide: !isEdit }"
+      v-foucs="isEdit"
+      @blur="inputmsg"
+      @keyup.enter="inputmsg"
+      v-model="inputStr"
+    />
     <i class="iconfont icon-chacha" @click="chaItem"></i>
   </div>
 </template>
@@ -21,7 +31,10 @@ export default {
     todomsg: Object,
   },
   data() {
-    return {};
+    return {
+      isEdit: false,
+      inputStr: '',
+    };
   },
   methods: {
     chaItem() {
@@ -29,6 +42,25 @@ export default {
     },
     changeDone() {
       this.todomsg.done = !this.todomsg.done;
+    },
+    changemsg() {
+      this.isEdit = !this.isEdit;
+      this.inputStr = this.todomsg.tobedone;
+    },
+    inputmsg() {
+      this.isEdit = false;
+      this.todomsg.tobedone = this.inputStr;
+      // console.log(this.inputStr);
+      // console.log(this.todomsg.tobedone);
+    },
+  },
+  directives: {
+    foucs: {
+      update(el, binding) {
+        if (binding.value) {
+          el.focus();
+        }
+      },
     },
   },
 };
@@ -61,6 +93,7 @@ export default {
   display: none;
   position: absolute;
   right: 10px;
+  top: 0;
 }
 #item:hover .icon-chacha {
   display: inline;
@@ -69,5 +102,25 @@ export default {
 .done {
   color: #d9d9d9;
   text-decoration: line-through;
+}
+
+p {
+  margin: 0;
+  width: 200px;
+}
+
+input {
+  position: absolute;
+  top: 0px;
+  width: 400px;
+  height: 50px;
+  outline: none;
+  border: none;
+  margin: 10px 0 0 10px;
+  font-size: 24px;
+}
+
+.hide {
+  display: none;
 }
 </style>
