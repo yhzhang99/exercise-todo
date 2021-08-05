@@ -136,7 +136,7 @@ export default {
       handler: function (todoData) {
         todoStorage.save(todoData);
       },
-      // deep: true,
+      deep: true,
     },
   },
   components: {
