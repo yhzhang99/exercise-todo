@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import todoStorage from '../todoStorage';
 import TodoItem from './coms/TodoItem.vue';
 import TodoInfo from './coms/TodoInfo.vue';
 // let id = 0;
@@ -36,18 +37,21 @@ export default {
   name: 'TodoHeader',
   data() {
     return {
-      todoData: [],
+      todoData: todoStorage.fetch(),
       tobedone: '',
       id: 0,
       flag: 'all',
-      sign: 1,
+      sign: true,
     };
   },
   methods: {
     addItem() {
+      if (this.todoData[this.todoData.length - 1]) {
+        this.id = this.todoData[this.todoData.length - 1].id + 1;
+      }
       this.todoData.push({
         id: this.id++,
-        done: 0,
+        done: false,
         tobedone: this.tobedone,
       });
       this.tobedone = '';
@@ -83,7 +87,7 @@ export default {
       //   }
       // }
       for (let i = 0; i < this.todoData.length; i++) {
-        if (this.todoData[i].done == 1) {
+        if (this.todoData[i].done === true) {
           this.todoData.splice(i, 1);
           i--;
         }
@@ -92,24 +96,23 @@ export default {
   },
   computed: {
     newTodoData() {
-      if (this.flag == 'all') {
+      if (this.flag === 'all') {
         return this.todoData;
-      } else if (this.flag == 'active') {
-        return this.todoData.filter((item) => item.done == 0);
+      } else if (this.flag === 'active') {
+        return this.todoData.filter((item) => item.done === false);
       }
-      return this.todoData.filter((item) => item.done == 1);
+      return this.todoData.filter((item) => item.done === true);
     },
 
     letfItems() {
       let num = 0;
       for (let i in this.todoData) {
-        if (this.todoData[i].done == 0) {
+        if (this.todoData[i].done === false) {
           num++;
         }
       }
       return num;
     },
-
     // leftItems: function () {
 
     //   if(this.todoData.filter((item) => item.done == 0)) {
@@ -127,6 +130,14 @@ export default {
     //     }
     //     return left;
     //   }
+  },
+  watch: {
+    todoData: {
+      handler: function (todoData) {
+        todoStorage.save(todoData);
+      },
+      // deep: true,
+    },
   },
   components: {
     TodoItem,
