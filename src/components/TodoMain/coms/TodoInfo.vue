@@ -1,5 +1,5 @@
 <template>
-  <div id="info">
+  <div id="info" v-if="$store.state.todoData[0]">
     <div id="left">
       <slot></slot>
       items left
