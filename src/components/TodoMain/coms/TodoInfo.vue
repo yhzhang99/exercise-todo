@@ -5,28 +5,14 @@
       items left
     </div>
     <div id="wrap">
-      <a
-        href="javascript:;"
-        :class="[index === 1 ? 'now' : '']"
-        @click="changeAll"
-        >All</a
-      >
-      <a
-        href="javascript:;"
-        :class="[index === 2 ? 'now' : '']"
-        @click="changeActive"
-        >Active</a
-      >
-      <a
-        href="javascript:;"
-        :class="[index === 3 ? 'now' : '']"
-        @click="changeCompleted"
-        >Competed</a
-      >
+      <router-link to="/TodoItem/all">All</router-link>
+      <router-link to="/TodoItem/active">Active</router-link>
+      <router-link to="/TodoItem/competed">Competed</router-link>
     </div>
-    <div id="right" @click="clearCom">
-      <a href="javascript:;">Clear completed</a>
-    </div>
+    <a href="javascript:;" id="right" @click="clearCom" v-if="isCompeted"
+      >Clear completed</a
+    >
+    <a href="javascript:;" id="right" v-else></a>
   </div>
 </template>
 
@@ -34,25 +20,21 @@
 export default {
   name: 'TodoInfo',
   data() {
-    return {
-      index: 1,
-    };
+    return {};
   },
   methods: {
-    changeAll() {
-      this.index = 1;
-      this.$emit('changeAll');
-    },
-    changeActive() {
-      this.index = 2;
-      this.$emit('changeActive');
-    },
-    changeCompleted() {
-      this.index = 3;
-      this.$emit('changeCompleted');
-    },
     clearCom() {
-      this.$emit('clearCom');
+      this.$store.commit('clearCom');
+    },
+  },
+  computed: {
+    isCompeted() {
+      for (let i in this.$store.state.todoData) {
+        if (this.$store.state.todoData[i].done === true) {
+          return true;
+        }
+      }
+      return false;
     },
   },
 };
@@ -73,10 +55,6 @@ export default {
   font-size: 12px;
   color: #777777;
 }
-/* #wrap {
-        width: 200px;
-        height: 50px;
-      } */
 a,
 a:link,
 a:visited,
@@ -88,7 +66,14 @@ a:active {
 a {
   padding: 10px;
 }
-.now {
+
+#right {
+  display: block;
+  width: 115px;
+  padding: 0;
+}
+.router-link-active {
   border: 1px solid #ead7d7;
+  text-decoration: underline;
 }
 </style>

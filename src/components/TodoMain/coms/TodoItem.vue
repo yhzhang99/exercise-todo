@@ -1,62 +1,77 @@
 <template>
-  <div id="item" :class="{ done: this.todomsg.done }">
-    <!-- <i :class="{'iconfont icon-Todo1231' : this.todomsg.done, 'iconfont icon-todo1' : !this.todomsg.done}" @click="changeDone"></i> -->
-    <!-- :class="[ iconfont, todomsg.done? icon-Todo1231 : icon-todo1]" -->
-    <i
-      :class="[
-        'iconfont',
-        this.todomsg.done ? 'icon-Todo1231' : 'iconfont icon-todo1',
-      ]"
-      @click="changeDone"
-    ></i>
-    <p @dblclick="changemsg" :class="{ hide: isEdit }">
-      {{ todomsg.tobedone }}
-    </p>
-    <input
-      type="text"
-      :class="{ hide: !isEdit }"
-      v-foucs="isEdit"
-      @blur="inputmsg"
-      @keyup.enter="inputmsg"
-      v-model="inputStr"
-    />
-    <i class="iconfont icon-chacha" @click="chaItem"></i>
+  <div>
+    <div
+      id="item"
+      :class="{ done: item.done }"
+      v-for="(item, index) in newTodoData"
+      :key="index"
+    >
+      <i
+        :class="[
+          'iconfont',
+          item.done ? 'icon-Todo1231' : 'iconfont icon-todo1',
+        ]"
+        @click="changeDone(item)"
+      ></i>
+      <p @dblclick="changeMsg(item)" v-if="!item.isEdit">
+        {{ item.tobedone }}
+      </p>
+      <input
+        type="text"
+        v-if="item.isEdit"
+        v-model="inputStr"
+        v-foucs="item.isEdit"
+        @keyup.enter="inputMsg(item, index)"
+        @blur="inputMsg(item, index)"
+      />
+      <i class="iconfont icon-chacha" @click="chaItem(item.id)"></i>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'TodoItem',
-  props: {
-    todomsg: Object,
-  },
   data() {
     return {
-      isEdit: false,
       inputStr: '',
+      flag: '',
     };
   },
   methods: {
-    chaItem() {
-      this.$emit('chaItem', this.todomsg.id);
+    chaItem(id) {
+      this.$store.commit('chaItem', id);
     },
-    changeDone() {
-      this.todomsg.done = !this.todomsg.done;
+    changeDone(item) {
+      item.done = !item.done;
     },
-    changemsg() {
-      this.isEdit = !this.isEdit;
-      this.inputStr = this.todomsg.tobedone;
+    changeMsg(item) {
+      item.isEdit = true;
+      this.inputStr = item.tobedone;
     },
-    inputmsg() {
-      this.isEdit = false;
-      this.todomsg.tobedone = this.inputStr;
-      // console.log(this.inputStr);
-      // console.log(this.todomsg.tobedone);
+    inputMsg(item, index) {
+      item.isEdit = false;
+      this.$store.commit('inputMsg', [index, this.inputStr]);
+    },
+  },
+  watch: {
+    $route(to) {
+      this.flag = to.params.flag;
+    },
+  },
+  computed: {
+    newTodoData() {
+      if (this.flag === 'active') {
+        return this.$store.state.todoData.filter((item) => item.done === false);
+      } else if (this.flag === 'competed') {
+        return this.$store.state.todoData.filter((item) => item.done === true);
+      }
+      return this.$store.state.todoData;
     },
   },
   directives: {
     foucs: {
-      update(el, binding) {
+      inserted(el, binding) {
         if (binding.value) {
           el.focus();
         }
@@ -78,10 +93,6 @@ export default {
   box-shadow: 0 0 2px;
   box-sizing: border-box;
 }
-/* #item p {
-    width: 400px;
-    height: 70px;
-  } */
 
 .icon-todo1,
 .icon-Todo1231 {
@@ -118,9 +129,5 @@ input {
   border: none;
   margin: 10px 0 0 10px;
   font-size: 24px;
-}
-
-.hide {
-  display: none;
 }
 </style>
