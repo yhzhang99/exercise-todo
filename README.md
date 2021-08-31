@@ -1,5 +1,3 @@
-# vue-starter-tiny
-
 ## Project setup
 ```
 yarn install
